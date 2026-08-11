@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
+import {api} from "@/lib/axios";
 
 const verificationSchema = z.object({
   code: z.string().length(6, 'Verification code must be exactly 6 digits'),
@@ -36,11 +38,13 @@ export function VerificationForm() {
   const onSubmit = async (data: VerificationValues) => {
     try {
       setIsLoading(true);
-      await authService.verifyEmail(data.code);
-      toast.success('Email verified successfully!');
-      router.push('/login');
+      await authService.verifyEmail({...data, email: sessionStorage.getItem('signupEmail') || ''});
+      toast.success(
+        "Email verified successfully! You can now log in.",
+      );
+      router.push("/login");
     } catch (error: any) {
-      toast.error(error.message || 'Verification failed');
+      toast.error(error.response?.data?.message || "Verification failed");
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +77,7 @@ export function VerificationForm() {
 
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
-          Didn't receive the code?{' '}
+          Didn&apos;t receive the code?{' '}
           {countdown > 0 ? (
             <span className="text-muted-foreground">Resend in {countdown}s</span>
           ) : (

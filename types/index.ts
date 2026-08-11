@@ -2,11 +2,12 @@ export type UserRole = 'USER' | 'ADMIN' | 'MANAGER';
 
 export interface User {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string; // For backwards compatibility with UI components
   email: string;
-  avatarUrl?: string;
   role: UserRole;
-  timezone?: string;
+  avatarUrl?: string;
 }
 
 export interface Profile extends User {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -14,7 +15,6 @@ import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 const signupSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
@@ -33,37 +33,26 @@ export function SignupForm() {
   const onSubmit = async (data: SignupValues) => {
     try {
       setIsLoading(true);
-      await authService.signup(data);
-      toast.success('Signup successful! Please verify your email.');
+      const response = await authService.signup(data);
+      console.log(response);
+      sessionStorage.setItem('signupEmail', response.body.email);
+      toast.success('Signup successful! Please check your email to verify your account.');
       router.push('/verify-email');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to sign up');
+      toast.error(error.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleSignup = async () => {
-    try {
-      setIsGoogleLoading(true);
-      await authService.googleLogin();
-      toast.success('Signed up with Google!');
-      router.push('/my-appointments');
-    } catch (error: any) {
-      toast.error('Google signup failed');
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    setIsGoogleLoading(true);
+    authService.googleLogin();
   };
 
   return (
     <div className="w-full max-w-md space-y-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-3">
-          <Label htmlFor="name">Full Name</Label>
-          <Input id="name" placeholder="Alice Smith" {...register('name')} disabled={isLoading || isGoogleLoading} />
-          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-        </div>
         <div className="space-y-3">
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" placeholder="alice@example.com" {...register('email')} disabled={isLoading || isGoogleLoading} />

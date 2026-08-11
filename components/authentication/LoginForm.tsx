@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState } from 'react';
@@ -34,8 +35,8 @@ export function LoginForm() {
   const onSubmit = async (data: LoginValues) => {
     try {
       setIsLoading(true);
-      const res = await authService.login(data.email, data.password);
-      login(res.user);
+      const res = await authService.login(data);
+      login(res.body);
       toast.success('Login successful!');
       router.push('/my-appointments');
     } catch (error: any) {
@@ -45,19 +46,11 @@ export function LoginForm() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      setIsGoogleLoading(true);
-      const res = await authService.googleLogin();
-      login(res.user);
-      toast.success('Logged in with Google!');
-      router.push('/my-appointments');
-    } catch (error: any) {
-      toast.error('Google login failed');
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
+  const handleGoogleLogin = () => {
+    setIsGoogleLoading(true);
+    authService.googleLogin();
+    setIsGoogleLoading(false);
+  }
 
   return (
     <div className="w-full max-w-md space-y-6">
@@ -103,7 +96,7 @@ export function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        Don't have an account? <Link href="/signup" className="text-primary hover:underline">Sign up</Link>
+        Don&apos;t have an account? <Link href="/signup" className="text-primary hover:underline">Sign up</Link>
       </p>
     </div>
   );
