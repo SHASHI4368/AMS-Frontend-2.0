@@ -5,7 +5,7 @@ export const authService = {
   getCurrentUser: async () => {
     // We wrap this in a try-catch so it doesn't throw unhandled promise rejections if not logged in
     try {
-      const response = await api.get("/users/me");
+      const response = await api.get("/profile/me");
       if (response.data.success && response.data.body) {
         const body = response.data.body;
         return {

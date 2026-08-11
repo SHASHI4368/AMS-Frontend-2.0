@@ -5,7 +5,7 @@ import { Profile } from '../types';
 export const profileService = {
   getProfile: async (userId: string): Promise<Profile | undefined> => {
     await delay(500);
-    return dummyProfiles[userId];
+    return dummyProfiles["u1"];
   },
 
   updateProfile: async (userId: string, updates: Partial<Profile>): Promise<Profile> => {

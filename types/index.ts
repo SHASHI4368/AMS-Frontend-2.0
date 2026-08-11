@@ -8,6 +8,9 @@ export interface User {
   email: string;
   role: UserRole;
   avatarUrl?: string;
+  phoneNumber?: string;
+  gender?: string;
+  bio?: string;
 }
 
 export interface Profile extends User {

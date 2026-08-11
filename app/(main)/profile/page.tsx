@@ -12,17 +12,12 @@ export default function ProfilePage() {
   const { user } = useAuthStore();
   const { profile, setProfile } = useProfileStore();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['profile', user?.id],
-    queryFn: () => profileService.getProfile(user!.id),
-    enabled: !!user,
-  });
-
   useEffect(() => {
-    if (data && !profile) {
-      setProfile(data);
+    if (user && !profile) {
+      // Initialize profile store with the fully loaded user object from auth
+      setProfile(user as any);
     }
-  }, [data, profile, setProfile]);
+  }, [user, profile, setProfile]);
 
   return (
     <div className="space-y-8">
@@ -32,7 +27,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="bg-card p-6 md:p-8 rounded-xl border border-border shadow-sm">
-        {isLoading || !profile ? (
+        {!profile ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
