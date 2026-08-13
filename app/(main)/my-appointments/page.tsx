@@ -46,7 +46,7 @@ export default function MyAppointmentsPage() {
         <StatCard title="Rejected" value={stats.rejected} icon={XCircle} color="text-red-600" bg="bg-red-100" />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-xl shadow-sm border border-border">
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-card p-4 rounded-md shadow-sm border border-border">
         <div className="relative w-full sm:max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
@@ -77,7 +77,7 @@ export default function MyAppointmentsPage() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : filteredAppointments.length === 0 ? (
-        <div className="text-center py-20 bg-card rounded-xl border border-border shadow-sm">
+        <div className="text-center py-20 bg-card rounded-md border border-border shadow-sm">
           <CalendarIcon className="mx-auto h-12 w-12 text-slate-300" />
           <h3 className="mt-4 text-lg font-medium text-foreground">No appointments found</h3>
           <p className="mt-1 text-muted-foreground">Try adjusting your search or filters.</p>
@@ -95,7 +95,7 @@ export default function MyAppointmentsPage() {
 
 function StatCard({ title, value, icon: Icon, color, bg }: { title: string, value: number, icon: any, color: string, bg: string }) {
   return (
-    <div className="bg-card p-6 rounded-xl border border-border shadow-sm flex items-center gap-4">
+    <div className="bg-card p-6 rounded-md border border-border shadow-sm flex items-center gap-4">
       <div className={`p-4 rounded-full ${bg} ${color}`}>
         <Icon className="h-6 w-6" />
       </div>

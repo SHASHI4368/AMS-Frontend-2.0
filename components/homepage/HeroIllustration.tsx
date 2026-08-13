@@ -83,7 +83,7 @@ export function HeroIllustration() {
           variants={floatVariants}
           initial="initial"
           animate="animate"
-          className="bg-card p-4 rounded-xl border border-border shadow-xl flex items-start gap-4 w-[260px]"
+          className="bg-card p-4 rounded-md border border-border shadow-xl flex items-start gap-4 w-[260px]"
         >
           <div className="h-10 w-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
             <Clock className="h-5 w-5 text-accent" />
@@ -109,7 +109,7 @@ export function HeroIllustration() {
           initial="initial"
           animate="animate"
           style={{ animationDelay: '1s' }}
-          className="bg-card p-4 rounded-xl border border-border shadow-xl flex items-center gap-3 w-[220px]"
+          className="bg-card p-4 rounded-md border border-border shadow-xl flex items-center gap-3 w-[220px]"
         >
           <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
             <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -131,7 +131,7 @@ export function HeroIllustration() {
           initial="initial"
           animate="animate"
           style={{ animationDelay: '2s' }}
-          className="bg-foreground text-background p-4 rounded-xl shadow-2xl flex items-center gap-3 w-[240px]"
+          className="bg-foreground text-background p-4 rounded-md shadow-2xl flex items-center gap-3 w-[240px]"
         >
           <div className="h-10 w-10 rounded-full bg-background/20 flex items-center justify-center shrink-0">
             <BellRing className="h-5 w-5 text-background" />
@@ -153,7 +153,7 @@ export function HeroIllustration() {
           initial="initial"
           animate="animate"
           style={{ animationDelay: '0.5s' }}
-          className="bg-card p-4 rounded-xl border border-border shadow-xl flex gap-4 w-[280px]"
+          className="bg-card p-4 rounded-md border border-border shadow-xl flex gap-4 w-[280px]"
         >
           <div className="flex flex-col items-center justify-center bg-muted rounded-lg px-3 py-2 shrink-0">
             <span className="text-xs font-bold text-accent uppercase">Oct</span>

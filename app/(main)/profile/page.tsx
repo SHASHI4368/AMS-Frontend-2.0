@@ -26,7 +26,7 @@ export default function ProfilePage() {
         <p className="text-muted-foreground mt-1">Manage your personal information and preferences.</p>
       </div>
 
-      <div className="bg-card p-6 md:p-8 rounded-xl border border-border shadow-sm">
+      <div className="bg-card p-6 md:p-8 rounded-md border border-border shadow-sm">
         {!profile ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />

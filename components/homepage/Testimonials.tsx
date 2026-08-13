@@ -45,7 +45,7 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
-              className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-xl transition-shadow"
+              className="bg-card border border-border p-8 rounded-lg shadow-sm hover:shadow-xl transition-shadow"
             >
               <div className="flex gap-1 mb-6 text-yellow-500">
                 {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-current" />)}

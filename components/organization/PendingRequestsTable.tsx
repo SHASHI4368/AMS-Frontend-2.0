@@ -41,7 +41,7 @@ export function PendingRequestsTable({ organizationId }: { organizationId: strin
 
   if (requests.length === 0) {
     return (
-      <div className="bg-card rounded-xl border border-border shadow-sm p-12 text-center">
+      <div className="bg-card rounded-md border border-border shadow-sm p-12 text-center">
         <h3 className="text-lg font-medium text-foreground">No Pending Requests</h3>
         <p className="text-muted-foreground mt-1">There are no users currently requesting to join this organization.</p>
       </div>
@@ -49,7 +49,7 @@ export function PendingRequestsTable({ organizationId }: { organizationId: strin
   }
 
   return (
-    <div className="border border-border rounded-xl overflow-hidden">
+    <div className="border border-border rounded-md overflow-hidden">
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>

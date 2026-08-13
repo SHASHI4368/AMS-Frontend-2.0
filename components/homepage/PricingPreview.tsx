@@ -66,7 +66,7 @@ export function PricingPreview() {
           {plans.map((plan) => (
             <div 
               key={plan.name}
-              className={`rounded-3xl p-8 flex flex-col ${
+              className={`rounded-lg p-8 flex flex-col ${
                 plan.highlighted 
                   ? 'bg-foreground text-background shadow-2xl scale-105 border border-foreground ring-4 ring-foreground/10' 
                   : 'bg-background text-foreground border border-border shadow-sm'
@@ -95,7 +95,7 @@ export function PricingPreview() {
 
               <Link href="/signup" className="w-full mt-auto">
                 <Button 
-                  className={`w-full h-12 rounded-xl text-base font-bold ${
+                  className={`w-full h-12 rounded-md text-base font-bold ${
                     plan.highlighted 
                       ? 'bg-background text-foreground hover:bg-background/90' 
                       : 'bg-foreground text-background hover:bg-foreground/90'

@@ -36,16 +36,16 @@ export default function OrganizationPage() {
     return notFound();
   }
 
-  const membership = members.find(m => m.userId === user?.id);
+  // const membership = members.find(m => m.userId === user?.id);
 
-  if (!membership) {
-    return (
-      <div className="max-w-3xl mx-auto py-20 text-center">
-        <h2 className="text-2xl font-bold">Access Denied</h2>
-        <p className="text-muted-foreground mt-2">You are not a member of this organization.</p>
-      </div>
-    );
-  }
+  // if (!membership) {
+  //   return (
+  //     <div className="max-w-3xl mx-auto py-20 text-center">
+  //       <h2 className="text-2xl font-bold">Access Denied</h2>
+  //       <p className="text-muted-foreground mt-2">You are not a member of this organization.</p>
+  //     </div>
+  //   );
+  // }
 
-  return <OrganizationWorkspaceLayout organization={org} membership={membership} />;
+  return <OrganizationWorkspaceLayout organization={org} />;
 }

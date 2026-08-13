@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,11 +10,33 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, UploadCloud } from 'lucide-react';
+import { Loader2, UploadCloud, Check, ChevronsUpDown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Controller } from 'react-hook-form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
 import { Profile } from '@/types';
+
+const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
+const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY;
+
+const authenticator = async () => {
+  try {
+    const response = await fetch('/api/imagekit/auth');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Request failed with status ${response.status}: ${errorText}`);
+    }
+    const data = await response.json();
+    const { signature, expire, token } = data;
+    return { signature, expire, token };
+  } catch (error) {
+    throw new Error(`Authentication request failed: ${error}`);
+  }
+};
 
 const profileSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
@@ -23,6 +45,7 @@ const profileSchema = z.object({
   gender: z.string().optional(),
   bio: z.string().optional(),
   timezone: z.string().optional(),
+  avatarUrl: z.string().optional(),
 });
 
 type ProfileValues = z.infer<typeof profileSchema>;
@@ -31,8 +54,21 @@ export function ProfileForm({ initialData }: { initialData: Profile }) {
   const { updateProfile } = useProfileStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isTimezoneOpen, setIsTimezoneOpen] = useState(false);
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  useEffect(() => {
+    return () => {
+      if (selectedFile) {
+        URL.revokeObjectURL(URL.createObjectURL(selectedFile));
+      }
+    };
+  }, [selectedFile]);
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<ProfileValues>({
+  const previewUrl = selectedFile ? URL.createObjectURL(selectedFile) : null;
+
+  const { register, handleSubmit, control, getValues, setValue, formState: { errors } } = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: initialData.firstName || '',
@@ -40,14 +76,15 @@ export function ProfileForm({ initialData }: { initialData: Profile }) {
       phoneNumber: initialData.phoneNumber || '',
       gender: initialData.gender || '',
       bio: initialData.bio || '',
-      timezone: initialData.timezone || 'UTC',
+      timezone: initialData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+      avatarUrl: initialData.avatarUrl || '',
     }
   });
 
   const onSubmit = async (data: ProfileValues) => {
     try {
       setIsLoading(true);
-      const updated = await profileService.updateProfile(initialData.id, data);
+      const updated = await profileService.updateProfile(data);
       updateProfile(updated);
       toast.success('Profile updated successfully');
     } catch (error) {
@@ -57,17 +94,42 @@ export function ProfileForm({ initialData }: { initialData: Profile }) {
     }
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleManualUpload = async () => {
+    if (!selectedFile) return;
+    if (selectedFile.size > 2000000) {
+      toast.error("File size must be less than 2MB");
+      return;
+    }
+    
+    setIsUploading(true);
     try {
-      setIsUploading(true);
-      const url = await profileService.uploadAvatar(file);
-      const updated = await profileService.updateProfile(initialData.id, { avatarUrl: url });
+      const authData = await authenticator();
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('publicKey', publicKey || '');
+      formData.append('signature', authData.signature);
+      formData.append('expire', authData.expire.toString());
+      formData.append('token', authData.token);
+      formData.append('fileName', `avatar-${initialData.id}`);
+      formData.append('useUniqueFileName', 'true');
+
+      const res = await fetch('https://upload.imagekit.io/api/v1/files/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+
+      setValue('avatarUrl', data.url, { shouldDirty: true });
+      const currentData = getValues();
+      const updated = await profileService.updateProfile(currentData);
       updateProfile(updated);
       toast.success('Avatar updated successfully');
+      setIsAvatarDialogOpen(false);
+      setSelectedFile(null);
     } catch (error) {
+      console.error(error);
       toast.error('Failed to upload avatar');
     } finally {
       setIsUploading(false);
@@ -82,12 +144,57 @@ export function ProfileForm({ initialData }: { initialData: Profile }) {
           <AvatarFallback className="text-2xl">{initialData.firstName?.charAt(0) || 'U'}</AvatarFallback>
         </Avatar>
         <div>
-          <Label htmlFor="avatar-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-            {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
-            Change Picture
-          </Label>
-          <Input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} disabled={isUploading} />
-          <p className="text-sm text-muted-foreground mt-2">JPG, GIF or PNG. 1MB max.</p>
+          <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
+            <DialogTrigger render={<Button variant="outline" disabled={isUploading} />}>
+              {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
+              Change Picture
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Upload Profile Picture</DialogTitle>
+                <DialogDescription>
+                  Select a new image from your device to update your profile avatar.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg border-muted-foreground/25 hover:border-muted-foreground/50 transition-colors w-full overflow-hidden min-h-[250px]">
+                {!selectedFile ? (
+                  <>
+                    <UploadCloud className="h-10 w-10 text-muted-foreground mb-4" />
+                    <p className="text-sm text-muted-foreground mb-4">Select an image to preview</p>
+                    <Label htmlFor="manual-upload" className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                      Browse Files
+                    </Label>
+                    <input 
+                      id="manual-upload"
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="relative h-32 w-32 rounded-full overflow-hidden mb-4 border-4 border-background shadow-sm">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={previewUrl!} alt="Preview" className="object-cover h-full w-full" />
+                    </div>
+                    <p className="text-sm font-medium mb-4 truncate w-full text-center px-4">{selectedFile.name}</p>
+                    
+                    <div className="flex w-full gap-3">
+                      <Button variant="outline" onClick={() => setSelectedFile(null)} disabled={isUploading} className="flex-1">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleManualUpload} disabled={isUploading} className="flex-1">
+                        {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+                        Proceed
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+          <p className="text-sm text-muted-foreground mt-2">JPG, GIF or PNG. 2MB max.</p>
         </div>
       </div>
 
@@ -134,7 +241,60 @@ export function ProfileForm({ initialData }: { initialData: Profile }) {
           </div>
           <div className="space-y-3">
             <Label htmlFor="timezone">Timezone</Label>
-            <Input id="timezone" {...register('timezone')} disabled={isLoading} placeholder="America/New_York" />
+            <Controller
+              control={control}
+              name="timezone"
+              render={({ field }) => (
+                <Popover open={isTimezoneOpen} onOpenChange={setIsTimezoneOpen}>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-full justify-between h-12 px-4 font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                        disabled={isLoading}
+                      />
+                    }
+                  >
+                    <span className="truncate">
+                      {field.value ? field.value.replace(/_/g, ' ') : "Select timezone"}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--anchor-width] p-0 rounded-md" align="start">
+                    <Command>
+                      <CommandInput placeholder="Search timezone..." />
+                      <CommandList>
+                        <CommandEmpty>No timezone found.</CommandEmpty>
+                        <CommandGroup>
+                          {Intl.supportedValuesOf('timeZone').map((tz) => (
+                            <CommandItem
+                              key={tz}
+                              value={tz}
+                              onSelect={() => {
+                                field.onChange(tz);
+                                setIsTimezoneOpen(false);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4 shrink-0",
+                                  field.value === tz ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              <span className="truncate">{tz.replace(/_/g, ' ')}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
           </div>
         </div>
         

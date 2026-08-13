@@ -42,8 +42,8 @@ export function OrganizationSection() {
 
           {/* Level 1: Organization */}
           <motion.div variants={item} className="relative z-10 flex justify-center mb-16">
-            <div className="bg-background border-2 border-accent p-6 rounded-2xl shadow-xl flex items-center gap-4 w-72">
-              <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+            <div className="bg-background border-2 border-accent p-6 rounded-lg shadow-xl flex items-center gap-4 w-72">
+              <div className="h-12 w-12 rounded-md bg-accent/10 flex items-center justify-center shrink-0">
                 <Building2 className="h-6 w-6 text-accent" />
               </div>
               <div>
@@ -55,8 +55,8 @@ export function OrganizationSection() {
 
           {/* Level 2: Managers */}
           <motion.div variants={item} className="relative z-10 flex justify-center mb-16">
-            <div className="bg-background border border-border p-6 rounded-2xl shadow-lg flex items-center gap-4 w-64 relative">
-              <div className="h-10 w-10 rounded-xl bg-card flex items-center justify-center shrink-0">
+            <div className="bg-background border border-border p-6 rounded-lg shadow-lg flex items-center gap-4 w-64 relative">
+              <div className="h-10 w-10 rounded-md bg-card flex items-center justify-center shrink-0">
                 <ShieldCheck className="h-5 w-5 text-foreground" />
               </div>
               <div>
@@ -72,7 +72,7 @@ export function OrganizationSection() {
 
           {/* Level 3: Employees & Appointments */}
           <div className="relative z-10 flex justify-between px-10 md:px-24">
-            <motion.div variants={item} className="bg-background border border-border p-5 rounded-2xl shadow-md flex items-center gap-3 w-48 relative">
+            <motion.div variants={item} className="bg-background border border-border p-5 rounded-lg shadow-md flex items-center gap-3 w-48 relative">
               <div className="absolute -top-16 left-1/2 w-px h-16 bg-border -translate-x-1/2" />
               <div className="h-8 w-8 rounded-lg bg-card flex items-center justify-center shrink-0">
                 <Users className="h-4 w-4 text-foreground" />
@@ -83,7 +83,7 @@ export function OrganizationSection() {
               </div>
             </motion.div>
 
-            <motion.div variants={item} className="bg-background border border-border p-5 rounded-2xl shadow-md flex items-center gap-3 w-48 relative">
+            <motion.div variants={item} className="bg-background border border-border p-5 rounded-lg shadow-md flex items-center gap-3 w-48 relative">
               <div className="absolute -top-16 left-1/2 w-px h-16 bg-border -translate-x-1/2" />
               <div className="h-8 w-8 rounded-lg bg-card flex items-center justify-center shrink-0">
                 <CalendarCheck className="h-4 w-4 text-foreground" />

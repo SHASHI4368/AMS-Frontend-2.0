@@ -71,7 +71,7 @@ export function AppointmentDrawer({
 
           <div className="space-y-6">
             {/* Details Card */}
-            <div className="bg-card border border-border rounded-xl p-4 space-y-4 shadow-sm">
+            <div className="bg-card border border-border rounded-md p-4 space-y-4 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 bg-muted p-2 rounded-lg"><Clock className="h-4 w-4 text-muted-foreground" /></div>
                 <div>

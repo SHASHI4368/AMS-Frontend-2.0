@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { api } from '@/lib/axios';
 import { delay } from '../utils/mockUtils';
 import { dummyProfiles } from '../dummy-data';
 import { Profile } from '../types';
@@ -8,16 +10,22 @@ export const profileService = {
     return dummyProfiles["u1"];
   },
 
-  updateProfile: async (userId: string, updates: Partial<Profile>): Promise<Profile> => {
-    await delay(800);
-    const profile = dummyProfiles[userId];
-    if (!profile) throw new Error('Profile not found');
-    return { ...profile, ...updates };
-  },
+  updateProfile: async (updates: Partial<Profile>) => {
+    const payload: any = { ...updates };
+    if (payload.phoneNumber !== undefined) {
+      payload.telephone = payload.phoneNumber;
+      delete payload.phoneNumber;
+    }
 
-  uploadAvatar: async (file: File): Promise<string> => {
-    await delay(2000);
-    // Simulating ImageKit upload
-    return `https://i.pravatar.cc/150?u=${Date.now()}`;
+    console.log(payload);
+    const response = await api.put('/profile/me', payload);
+    console.log(response)
+    const body = response.data.body;
+
+    return {
+      ...body,
+      id: String(body.id),
+      phoneNumber: body.telephone || body.phoneNumber
+    };
   }
 };

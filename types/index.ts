@@ -10,6 +10,7 @@ export interface User {
   avatarUrl?: string;
   phoneNumber?: string;
   gender?: string;
+  timezone?: string;
   bio?: string;
 }
 
@@ -45,8 +46,10 @@ export interface Organization {
   name: string;
   description?: string;
   logoUrl?: string;
-  ownerId: string;
+  ownerId?: string;
   createdAt: string;
+  memberCount?: number;
+  myRole?: 'MEMBER' | 'ADMIN' | 'OWNER';
 }
 
 export type MembershipStatus = 'PENDING' | 'ACTIVE' | 'REJECTED';
@@ -55,7 +58,7 @@ export interface Membership {
   id: string;
   organizationId: string;
   userId: string;
-  role: 'MEMBER' | 'MANAGER';
+  role: 'MEMBER' | 'ADMIN' | 'OWNER';
   status: MembershipStatus;
   joinedAt?: string;
   user?: User;
@@ -67,7 +70,7 @@ export interface Invitation {
   id: string;
   organizationId: string;
   email: string;
-  role: 'MEMBER' | 'MANAGER';
+  role: 'MEMBER' | 'ADMIN' | 'OWNER';
   status: 'PENDING' | 'ACCEPTED' | 'EXPIRED';
   invitedAt: string;
 }

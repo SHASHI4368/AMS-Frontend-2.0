@@ -26,7 +26,7 @@ export function CalendarPreview() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7 }}
-          className="bg-background rounded-3xl border border-border shadow-2xl overflow-hidden flex flex-col h-[700px]"
+          className="bg-background rounded-lg border border-border shadow-2xl overflow-hidden flex flex-col h-[700px]"
         >
           {/* Topbar */}
           <div className="h-16 border-b border-border flex items-center justify-between px-6 bg-card shrink-0">
@@ -205,7 +205,7 @@ export function CalendarPreview() {
               </div>
               
               <div className="flex flex-col gap-4">
-                <div className="bg-background border border-border rounded-xl p-4 shadow-sm hover:border-accent transition-colors cursor-pointer">
+                <div className="bg-background border border-border rounded-md p-4 shadow-sm hover:border-accent transition-colors cursor-pointer">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded">Approved</span>
                     <span className="text-xs text-muted-foreground">In 30m</span>
@@ -216,7 +216,7 @@ export function CalendarPreview() {
                   </div>
                 </div>
 
-                <div className="bg-background border border-border rounded-xl p-4 shadow-sm hover:border-accent transition-colors cursor-pointer opacity-70">
+                <div className="bg-background border border-border rounded-md p-4 shadow-sm hover:border-accent transition-colors cursor-pointer opacity-70">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded">Pending</span>
                   </div>

@@ -28,7 +28,7 @@ export function StepCard({ number, title, description, icon, delay = 0 }: StepCa
         {number}
       </div>
 
-      <div className="bg-background border border-border rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow">
+      <div className="bg-background border border-border rounded-lg p-6 shadow-sm hover:shadow-lg transition-shadow">
         <div className="h-10 w-10 rounded-lg bg-card flex items-center justify-center mb-4 text-accent">
           {icon}
         </div>

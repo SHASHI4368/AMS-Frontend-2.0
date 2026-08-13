@@ -55,7 +55,7 @@ export function CalendarSidebar({ userId, isOwner, targetUser }: { userId: strin
       </div>
 
       {/* Mini Calendar */}
-      <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
+      <div className="bg-card border border-border rounded-md p-4 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <span className="font-semibold text-sm">{format(date, 'MMMM yyyy')}</span>
           <div className="flex gap-1">
@@ -95,7 +95,7 @@ export function CalendarSidebar({ userId, isOwner, targetUser }: { userId: strin
       </div>
 
       {/* Upcoming Meetings */}
-      <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex-1">
+      <div className="bg-card border border-border rounded-md p-5 shadow-sm flex-1">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-sm">{isOwner ? 'Upcoming' : 'Availability Overview'}</h3>
           <Filter className="h-4 w-4 text-muted-foreground" />
@@ -135,7 +135,7 @@ export function CalendarSidebar({ userId, isOwner, targetUser }: { userId: strin
       </div>
 
       {/* Filters (Mock) */}
-      <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+      <div className="bg-card border border-border rounded-md p-5 shadow-sm">
         <h3 className="font-semibold text-sm mb-4">{isOwner ? 'My Calendars' : `${targetUser?.name || 'Member'}'s Calendar`}</h3>
         <div className="flex flex-col gap-3">
           <label className="flex items-center gap-3 text-sm cursor-pointer">

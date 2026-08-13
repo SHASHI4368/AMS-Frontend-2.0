@@ -15,11 +15,10 @@ import Link from 'next/link';
 
 interface WorkspaceProps {
   organization: Organization;
-  membership: Membership;
 }
 
-export function OrganizationWorkspaceLayout({ organization, membership }: WorkspaceProps) {
-  const isManager = membership.role === 'MANAGER' || organization.ownerId === membership.userId;
+export function OrganizationWorkspaceLayout({ organization }: WorkspaceProps) {
+  const isManager = organization.myRole === 'OWNER' || organization.myRole === 'ADMIN';
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -36,7 +35,7 @@ export function OrganizationWorkspaceLayout({ organization, membership }: Worksp
       
       <OrganizationStats organization={organization} isManager={isManager} />
 
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden mt-8">
+      <div className="bg-card border border-border rounded-md shadow-sm overflow-hidden mt-8">
         <Tabs defaultValue="overview" className="w-full">
           <div className="border-b border-border bg-muted/20 px-6 py-2 overflow-x-auto">
             <TabsList className="bg-transparent gap-6 h-auto p-0 min-w-max">
@@ -91,7 +90,7 @@ export function OrganizationWorkspaceLayout({ organization, membership }: Worksp
                 <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
                   {organization.description || "This organization has not provided a description yet."}
                 </p>
-                <div className="mt-8 bg-muted/50 border border-border p-6 rounded-xl inline-block">
+                <div className="mt-8 bg-muted/50 border border-border p-6 rounded-md inline-block">
                   <p className="text-sm font-medium text-foreground mb-1">Your Role</p>
                   <p className="text-muted-foreground flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-green-500"></span>

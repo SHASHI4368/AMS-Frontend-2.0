@@ -21,7 +21,7 @@ export function OrganizationStats({ organization, isManager }: OrganizationStats
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {[...Array(6)].map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
+          <Skeleton key={i} className="h-28 rounded-md" />
         ))}
       </div>
     );
@@ -44,7 +44,7 @@ export function OrganizationStats({ organization, isManager }: OrganizationStats
   return (
     <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-${isManager ? '6' : '4'} gap-4`}>
       {statCards.map((stat, i) => (
-        <div key={i} className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div key={i} className="bg-card border border-border rounded-md p-4 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
             <div className={`p-2 rounded-lg ${stat.bg}`}>

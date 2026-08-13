@@ -54,11 +54,11 @@ export function LiveUpdatesSection() {
           </div>
 
           {/* Animation Illustration */}
-          <div className="relative h-[400px] bg-background/5 rounded-3xl border border-background/10 p-8 flex items-center justify-between">
+          <div className="relative h-[400px] bg-background/5 rounded-lg border border-background/10 p-8 flex items-center justify-between">
             
             {/* User 1 (Manager) */}
             <div className="flex flex-col items-center gap-4 z-10">
-              <div className="bg-background text-foreground p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 w-32 border border-border">
+              <div className="bg-background text-foreground p-4 rounded-lg shadow-xl flex flex-col items-center gap-2 w-32 border border-border">
                 <User className="h-8 w-8 text-accent" />
                 <span className="font-bold text-sm">Manager</span>
               </div>
@@ -110,7 +110,7 @@ export function LiveUpdatesSection() {
 
             {/* User 2 (Employee) */}
             <div className="flex flex-col items-center gap-4 z-10">
-              <div className="bg-background text-foreground p-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 w-32 border border-border">
+              <div className="bg-background text-foreground p-4 rounded-lg shadow-xl flex flex-col items-center gap-2 w-32 border border-border">
                 <Laptop className="h-8 w-8 text-accent" />
                 <span className="font-bold text-sm">Employee</span>
               </div>
@@ -121,7 +121,7 @@ export function LiveUpdatesSection() {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 2.2, type: "spring" }}
-                  className="bg-background text-foreground px-4 py-2 rounded-xl text-xs font-bold shadow-xl border border-border flex items-center gap-2 absolute -bottom-16 -left-12 w-48"
+                  className="bg-background text-foreground px-4 py-2 rounded-md text-xs font-bold shadow-xl border border-border flex items-center gap-2 absolute -bottom-16 -left-12 w-48"
                 >
                   <Bell className="h-4 w-4 text-accent" />
                   Request Approved!

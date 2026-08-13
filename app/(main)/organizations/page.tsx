@@ -26,7 +26,7 @@ export default function OrganizationsPage() {
     queryFn: () => organizationService.getOrganizations(),
   });
 
-  const filteredOrgs = orgs.filter(o => o.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredOrgs = orgs.filter(o => (o.name || '').toLowerCase().includes(search.toLowerCase()));
 
   const handleJoin = (id: string) => {
     toast.promise(organizationService.requestToJoin(id), {
@@ -50,7 +50,7 @@ export default function OrganizationsPage() {
       </div>
 
       <Tabs defaultValue="my-orgs" className="w-full">
-        <TabsList className="h-14 w-full sm:w-auto grid grid-cols-3 sm:flex mb-8 bg-muted p-1 rounded-xl shadow-inner">
+        <TabsList className="h-14 w-full sm:w-auto grid grid-cols-3 sm:flex mb-8 bg-muted p-1 rounded-md shadow-inner">
           <TabsTrigger value="my-orgs" className="h-full rounded-lg data-[state=active]:bg-background data-[state=active]:shadow px-6 font-medium transition-all text-sm">
             <UserCircle className="h-4 w-4 mr-2 hidden sm:inline" /> My Organizations
           </TabsTrigger>
@@ -82,7 +82,7 @@ export default function OrganizationsPage() {
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : filteredOrgs.length === 0 ? (
-            <div className="text-center py-20 bg-card rounded-xl border border-border shadow-sm">
+            <div className="text-center py-20 bg-card rounded-md border border-border shadow-sm">
               <h3 className="text-lg font-medium text-foreground">No organizations found</h3>
               <p className="mt-1 text-muted-foreground">Try a different search term or create a new one.</p>
             </div>

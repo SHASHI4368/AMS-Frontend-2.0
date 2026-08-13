@@ -47,9 +47,9 @@ export function OrganizationSettings({ organization }: { organization: Organizat
           <div className="grid gap-2">
             <Label>Logo</Label>
             <div className="flex items-center gap-4">
-              <div className="h-20 w-20 bg-muted rounded-xl flex items-center justify-center border border-border">
+              <div className="h-20 w-20 bg-muted rounded-md flex items-center justify-center border border-border">
                 {organization.logoUrl ? (
-                  <img src={organization.logoUrl} alt="Logo" className="h-full w-full object-cover rounded-xl" />
+                  <img src={organization.logoUrl} alt="Logo" className="h-full w-full object-cover rounded-md" />
                 ) : (
                   <span className="text-muted-foreground text-2xl font-bold">{organization.name.substring(0, 2).toUpperCase()}</span>
                 )}
@@ -105,7 +105,7 @@ export function OrganizationSettings({ organization }: { organization: Organizat
       </div>
 
       {/* Danger Zone */}
-      <section className="mt-16 border border-destructive/20 bg-destructive/5 rounded-xl p-6">
+      <section className="mt-16 border border-destructive/20 bg-destructive/5 rounded-md p-6">
         <div className="flex items-start gap-4">
           <AlertTriangle className="h-6 w-6 text-destructive shrink-0 mt-1" />
           <div>

@@ -28,7 +28,7 @@ export function MemberProfileDrawer({ member, isOpen, onClose, isManager, curren
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 overflow-y-auto">
         <div className="bg-muted/30 h-32 w-full relative">
-          <div className="absolute -bottom-12 left-6 h-24 w-24 rounded-2xl border-4 border-background bg-primary/10 flex items-center justify-center overflow-hidden">
+          <div className="absolute -bottom-12 left-6 h-24 w-24 rounded-lg border-4 border-background bg-primary/10 flex items-center justify-center overflow-hidden">
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
             ) : (
@@ -55,11 +55,11 @@ export function MemberProfileDrawer({ member, isOpen, onClose, isManager, curren
 
           <div className="mt-8 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
+              <div className="bg-card border border-border rounded-md p-4 shadow-sm">
                 <p className="text-xs font-medium text-muted-foreground mb-1">Upcoming Meetings</p>
                 <p className="text-2xl font-bold text-foreground">4</p>
               </div>
-              <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
+              <div className="bg-card border border-border rounded-md p-4 shadow-sm">
                 <p className="text-xs font-medium text-muted-foreground mb-1">Completed</p>
                 <p className="text-2xl font-bold text-foreground">12</p>
               </div>

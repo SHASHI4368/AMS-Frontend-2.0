@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { delay } from '../utils/mockUtils';
-import { dummyOrganizations, dummyMemberships, dummyUsers } from '../dummy-data';
+import { dummyOrganizations, dummyMemberships, dummyUsers, dummyInvitations } from '../dummy-data';
 import { Organization, Membership, User, OrganizationActivity, OrganizationStatistics, Invitation } from '../types';
+import { api } from '@/lib/axios';
 
 export const organizationService = {
   getOrganizations: async (): Promise<Organization[]> => {
@@ -9,9 +11,27 @@ export const organizationService = {
   },
 
   getMyOrganizations: async (userId: string): Promise<Organization[]> => {
-    await delay(400);
-    const myOrgIds = dummyMemberships.filter(m => m.userId === userId && m.status === 'ACTIVE').map(m => m.organizationId);
-    return dummyOrganizations.filter(o => myOrgIds.includes(o.id));
+    try {
+      const { data } = await api.get('/organizations/my');
+      console.log("My orgs raw response:", data);
+      
+      let orgs = [];
+      if (Array.isArray(data.body)) orgs = data.body;
+      else if (data?.data && Array.isArray(data.data)) orgs = data.data;
+      else if (data?.content && Array.isArray(data.content)) orgs = data.content;
+      else if (data?._embedded) {
+        const keys = Object.keys(data._embedded);
+        if (keys.length > 0) orgs = data._embedded[keys[0]];
+      }
+
+      return orgs.map((org: any) => ({
+        ...org,
+        id: String(org.id)
+      }));
+    } catch (error) {
+      console.error("Failed to fetch my organizations", error);
+      throw error; // Let React Query handle the error state so it doesn't mask backend failures
+    }
   },
 
   getOrganizationMembers: async (orgId: string): Promise<Membership[]> => {
@@ -56,9 +76,19 @@ export const organizationService = {
     ];
   },
 
-  getOrganizationById: async (orgId: string): Promise<Organization | undefined> => {
-    await delay(300);
-    return dummyOrganizations.find(o => o.id === orgId);
+  getOrganizationById: async (orgId: string) => {
+    try {
+      const { data } = await api.get(`/organizations/${orgId}`);
+      console.log(data);
+      const orgData = data?.body
+      if (!orgData) return null;
+      return {
+        ...orgData,
+        id: String(orgData.id)
+      };
+    } catch (error) {
+      console.error(`Failed to fetch organization ${orgId}`, error);
+    }
   },
 
   getMyInvitations: async (email: string): Promise<any[]> => {
@@ -168,24 +198,21 @@ export const organizationService = {
   },
 
   createOrganization: async (name: string, description: string | undefined, userId: string): Promise<Organization> => {
-    await delay(900);
-    const newOrg: Organization = {
-      id: 'org_' + Date.now(),
-      name,
-      description,
-      ownerId: userId,
-      createdAt: new Date().toISOString()
-    };
-
-    dummyOrganizations.push(newOrg);
-    dummyMemberships.push({
-      id: 'm_' + Date.now(),
-      organizationId: newOrg.id,
-      userId: userId,
-      role: 'MANAGER',
-      status: 'ACTIVE',
-      joinedAt: new Date().toISOString()
+    // 1. Call real backend API
+    const { data } = await api.post('/organizations/create', { 
+      name, 
+      description, 
+      logoUrl: null 
     });
+
+    const orgData = data.data || data;
+
+    // 2. Map response to frontend model
+    const newOrg: Organization = {
+      ...orgData,
+      id: String(orgData.id), // Backend returns Long id, frontend expects string
+      ownerId: userId, // Ensure ownerId exists for local UI handling until fully integrated
+    };
 
     return newOrg;
   }

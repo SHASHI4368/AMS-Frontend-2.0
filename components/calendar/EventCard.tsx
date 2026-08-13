@@ -62,7 +62,7 @@ export function EventCard({ event, title }: { event: CalendarEvent; title: strin
             )}
           </div>
         </TooltipTrigger>
-        <TooltipContent side="right" align="start" className="w-72 p-0 rounded-xl overflow-hidden shadow-xl border-border">
+        <TooltipContent side="right" align="start" className="w-72 p-0 rounded-md overflow-hidden shadow-xl border-border">
           <div className={`h-2 w-full ${config.color}`} />
           <div className="p-4 bg-popover">
             <div className="flex justify-between items-start mb-3">

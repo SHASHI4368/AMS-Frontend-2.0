@@ -10,7 +10,7 @@ export function AppointmentCard({ appointment }: { appointment: Appointment }) {
   const end = parseISO(appointment.endTime);
 
   return (
-    <div className="bg-card border rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-card border rounded-md p-5 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="font-semibold text-lg text-foreground">{appointment.title}</h3>

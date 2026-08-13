@@ -20,7 +20,7 @@ export default function SettingsPage() {
         <p className="text-muted-foreground mt-1">Manage application preferences.</p>
       </div>
 
-      <div className="bg-card p-6 md:p-8 rounded-xl border border-border shadow-sm space-y-8">
+      <div className="bg-card p-6 md:p-8 rounded-md border border-border shadow-sm space-y-8">
         
         <section className="space-y-6">
           <h2 className="text-lg font-semibold text-foreground border-b pb-2">Appearance</h2>

@@ -55,7 +55,7 @@ export function MembersTable({ organizationId, isManager }: MembersTableProps) {
         )}
       </div>
 
-      <div className="border border-border rounded-xl overflow-hidden">
+      <div className="border border-border rounded-md overflow-hidden">
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>

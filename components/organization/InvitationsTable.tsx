@@ -39,7 +39,7 @@ export function InvitationsTable({ organizationId }: { organizationId: string })
 
   if (invitations.length === 0) {
     return (
-      <div className="bg-card rounded-xl border border-border shadow-sm p-12 text-center">
+      <div className="bg-card rounded-md border border-border shadow-sm p-12 text-center">
         <h3 className="text-lg font-medium text-foreground">No Pending Invitations</h3>
         <p className="text-muted-foreground mt-1">You haven't invited anyone to join this organization yet.</p>
         <Button className="mt-4">Invite Member</Button>
@@ -48,7 +48,7 @@ export function InvitationsTable({ organizationId }: { organizationId: string })
   }
 
   return (
-    <div className="border border-border rounded-xl overflow-hidden">
+    <div className="border border-border rounded-md overflow-hidden">
       <Table>
         <TableHeader className="bg-muted/50">
           <TableRow>

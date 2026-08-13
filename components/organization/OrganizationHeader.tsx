@@ -16,11 +16,11 @@ export function OrganizationHeader({ organization, isManager }: OrganizationHead
   const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="bg-card border border-border rounded-md shadow-sm p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div className="flex items-start sm:items-center gap-5">
-        <div className="h-20 w-20 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-3xl font-bold shadow-sm shrink-0">
+        <div className="h-20 w-20 bg-primary/10 text-primary rounded-md flex items-center justify-center text-3xl font-bold shadow-sm shrink-0">
           {organization.logoUrl ? (
-            <img src={organization.logoUrl} alt={organization.name} className="h-full w-full object-cover rounded-xl" />
+            <img src={organization.logoUrl} alt={organization.name} className="h-full w-full object-cover rounded-md" />
           ) : (
             organization.name.substring(0, 2).toUpperCase()
           )}

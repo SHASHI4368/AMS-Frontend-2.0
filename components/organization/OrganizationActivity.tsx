@@ -49,7 +49,7 @@ export function OrganizationActivity({ organizationId }: { organizationId: strin
             <div className={`absolute -left-[18px] top-1 flex h-9 w-9 items-center justify-center rounded-full border shadow-sm ${getBgColor(activity.type)}`}>
               {getIcon(activity.type)}
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
+            <div className="bg-card border border-border rounded-md p-4 shadow-sm">
               <div className="flex justify-between items-start mb-1">
                 <span className="font-semibold text-foreground text-sm">{activity.type}</span>
                 <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(activity.createdAt))} ago</span>

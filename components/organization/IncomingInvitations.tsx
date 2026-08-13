@@ -49,7 +49,7 @@ export function IncomingInvitations({ email }: { email: string }) {
 
   if (invitations.length === 0) {
     return (
-      <div className="bg-card rounded-xl border border-border shadow-sm p-12 text-center">
+      <div className="bg-card rounded-md border border-border shadow-sm p-12 text-center">
         <div className="h-16 w-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6">
           <Send className="h-8 w-8 text-primary opacity-80" />
         </div>
@@ -64,7 +64,7 @@ export function IncomingInvitations({ email }: { email: string }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {invitations.map((inv) => (
-        <div key={inv.id} className="bg-card border border-border rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden p-6 flex flex-col justify-between">
+        <div key={inv.id} className="bg-card border border-border rounded-md shadow-sm hover:shadow-md transition-shadow overflow-hidden p-6 flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-4">

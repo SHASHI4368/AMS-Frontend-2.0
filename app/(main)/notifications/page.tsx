@@ -59,7 +59,7 @@ export default function NotificationsPage() {
 
       <div className="space-y-6">
         {notifications.length === 0 ? (
-          <div className="text-center py-16 bg-card rounded-xl border border-border">
+          <div className="text-center py-16 bg-card rounded-md border border-border">
             <Bell className="mx-auto h-12 w-12 text-slate-300" />
             <h3 className="mt-4 text-lg font-medium text-foreground">All caught up!</h3>
             <p className="mt-1 text-muted-foreground">You have no new notifications.</p>
