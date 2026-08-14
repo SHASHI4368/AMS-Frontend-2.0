@@ -45,4 +45,12 @@ export const authService = {
     await delay(800);
     return { success: true };
   },
+
+  logout: async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  },
 };

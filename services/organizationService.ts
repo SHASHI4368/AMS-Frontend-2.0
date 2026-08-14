@@ -1,13 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { delay } from '../utils/mockUtils';
 import { dummyOrganizations, dummyMemberships, dummyUsers, dummyInvitations } from '../dummy-data';
-import { Organization, Membership, User, OrganizationActivity, OrganizationStatistics, Invitation } from '../types';
+import { Organization, Membership, User, OrganizationActivity, OrganizationStatistics, Invitation, PaginatedResponse } from '../types';
 import { api } from '@/lib/axios';
 
 export const organizationService = {
-  getOrganizations: async (): Promise<Organization[]> => {
-    await delay(500);
-    return [...dummyOrganizations];
+  getOrganizations: async (page = 0, size = 10, name = ''): Promise<PaginatedResponse<Organization>> => {
+    try {
+      const { data } = await api.get('/organizations/all', {
+        params: { page, size, name }
+      });
+      const body = data.body || data;
+      return {
+        ...body,
+        content: (body.content || []).map((org: any) => ({
+          ...org,
+          id: String(org.id)
+        }))
+      };
+    } catch (error) {
+      console.error("Failed to fetch organizations", error);
+      throw error;
+    }
   },
 
   getMyOrganizations: async (userId: string): Promise<Organization[]> => {
@@ -115,8 +129,9 @@ export const organizationService = {
     await delay(400);
   },
 
-  requestToJoin: async (orgId: string): Promise<void> => {
+  requestToJoin: async (orgId: string, message?: string): Promise<void> => {
     await delay(500);
+    console.log(`Requested to join ${orgId} with message: ${message}`);
   },
 
   getOrganizationActivity: async (orgId: string): Promise<OrganizationActivity[]> => {
@@ -190,11 +205,22 @@ export const organizationService = {
     await delay(400);
   },
 
-  updateOrganization: async (orgId: string, data: Partial<Organization>): Promise<Organization> => {
-    await delay(800);
-    const org = dummyOrganizations.find(o => o.id === orgId);
-    if (!org) throw new Error("Org not found");
-    return { ...org, ...data };
+  updateOrganization: async (orgId: string, payload: Partial<Organization>): Promise<Organization> => {
+    try {
+      const { data } = await api.put(`/organizations/${orgId}`, {
+        name: payload.name,
+        description: payload.description,
+        logoUrl: payload.logoUrl || ""
+      });
+      const orgData = data?.body || data?.data || data;
+      return {
+        ...orgData,
+        id: String(orgData.id)
+      };
+    } catch (error) {
+      console.error(`Failed to update organization ${orgId}`, error);
+      throw error;
+    }
   },
 
   createOrganization: async (name: string, description: string | undefined, userId: string): Promise<Organization> => {

@@ -55,8 +55,12 @@ export function MyOrganizations({ userId }: { userId: string }) {
             <div className="p-6 flex-1">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 bg-primary text-primary-foreground rounded-lg flex items-center justify-center text-xl font-bold shadow-sm">
-                    {(org.name || 'OR').substring(0, 2).toUpperCase()}
+                  <div className="h-14 w-14 bg-primary text-primary-foreground rounded-lg flex items-center justify-center text-xl font-bold shadow-sm overflow-hidden shrink-0">
+                    {org.logoUrl ? (
+                      <img src={org.logoUrl} alt={org.name} className="h-full w-full object-cover" />
+                    ) : (
+                      (org.name || 'OR').substring(0, 2).toUpperCase()
+                    )}
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-foreground">{org.name}</h3>

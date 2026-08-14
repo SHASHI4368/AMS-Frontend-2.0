@@ -41,6 +41,15 @@ export interface Appointment {
   organizationId?: string;
 }
 
+export interface PaginatedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
 export interface Organization {
   id: string;
   name: string;
@@ -50,6 +59,7 @@ export interface Organization {
   createdAt: string;
   memberCount?: number;
   myRole?: 'MEMBER' | 'ADMIN' | 'OWNER';
+  isMember?: boolean;
 }
 
 export type MembershipStatus = 'PENDING' | 'ACTIVE' | 'REJECTED';

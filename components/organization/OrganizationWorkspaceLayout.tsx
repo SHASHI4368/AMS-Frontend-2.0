@@ -38,16 +38,16 @@ export function OrganizationWorkspaceLayout({ organization }: WorkspaceProps) {
       <div className="bg-card border border-border rounded-md shadow-sm overflow-hidden mt-8">
         <Tabs defaultValue="overview" className="w-full">
           <div className="border-b border-border bg-muted/20 px-6 py-2 overflow-x-auto">
-            <TabsList className="bg-transparent gap-6 h-auto p-0 min-w-max">
+            <TabsList variant="line" className="bg-transparent gap-6 h-auto p-0 min-w-max">
               <TabsTrigger 
                 value="overview" 
-                className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                className="px-2 py-3"
               >
                 <Building2 className="h-4 w-4 mr-2" /> Overview
               </TabsTrigger>
               <TabsTrigger 
                 value="members" 
-                className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                className="px-2 py-3"
               >
                 <Users className="h-4 w-4 mr-2" /> Members
               </TabsTrigger>
@@ -56,25 +56,25 @@ export function OrganizationWorkspaceLayout({ organization }: WorkspaceProps) {
                 <>
                   <TabsTrigger 
                     value="requests" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                    className="px-2 py-3"
                   >
                     <UserPlus className="h-4 w-4 mr-2" /> Join Requests
                   </TabsTrigger>
                   <TabsTrigger 
                     value="invitations" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                    className="px-2 py-3"
                   >
                     <Send className="h-4 w-4 mr-2" /> Invitations
                   </TabsTrigger>
                   <TabsTrigger 
                     value="activity" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                    className="px-2 py-3"
                   >
                     <Activity className="h-4 w-4 mr-2" /> Activity
                   </TabsTrigger>
                   <TabsTrigger 
                     value="settings" 
-                    className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 py-3"
+                    className="px-2 py-3"
                   >
                     <Settings className="h-4 w-4 mr-2" /> Settings
                   </TabsTrigger>

@@ -3,12 +3,14 @@
 import { Menu, Search, Bell, CalendarCheck2, Building, Settings, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/authStore';
+import { authService } from '@/services/authService';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNotificationStore } from '@/store/notificationStore';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
 
 export function Topbar() {
   const pathname = usePathname();
@@ -24,22 +26,24 @@ export function Topbar() {
     { name: 'Organizations', href: '/organizations', icon: Building },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authService.logout();
     logout();
     router.push('/login');
   };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-background border-b border-border">
-      <div className="flex h-20 items-center px-4 md:px-8 max-w-7xl mx-auto w-full justify-between">
+      <div className="px-4 md:px-6 lg:px-8">
+        <div className="flex h-20 items-center max-w-7xl mx-auto w-full justify-between">
         
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/my-appointments" className="flex items-center space-x-2">
-            <div className="font-bold text-2xl tracking-tight text-foreground flex items-center gap-2">
-              <div className="h-6 w-6 border-2 border-foreground rounded-sm flex items-center justify-center">
-                 <div className="h-2 w-2 bg-foreground" />
+            <div className="font-bold text-2xl tracking-tight text-foreground flex items-center gap-2 group">
+              <div className="h-8 w-8 bg-foreground rounded-md flex items-center justify-center group-hover:bg-accent transition-colors">
+                <CalendarCheck2 className="h-5 w-5 text-background" />
               </div>
-              Ritovex
+              <span>AMS</span>
             </div>
           </Link>
 
@@ -77,13 +81,36 @@ export function Topbar() {
               <span className="text-xs text-muted-foreground">{user?.role || 'Guest'}</span>
             </div>
             
-            {/* Desktop User Menu could be a Dropdown here. For now, simple links. */}
-            <Link href="/profile">
-              <Avatar className="h-9 w-9 border-2 border-border hover:border-primary transition-all cursor-pointer">
-                <AvatarImage src={user?.avatarUrl} />
-                <AvatarFallback className="bg-muted text-muted-foreground">{user?.name?.charAt(0) || 'U'}</AvatarFallback>
-              </Avatar>
-            </Link>
+            {/* Desktop User Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <button type="button" className="outline-none focus:outline-none">
+                  <Avatar className="h-9 w-9 border-2 border-border hover:border-primary transition-all cursor-pointer">
+                    <AvatarImage src={user?.avatarUrl} />
+                    <AvatarFallback className="bg-muted text-muted-foreground">{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                  </Avatar>
+                </button>
+              } />
+              <DropdownMenuContent align="end" className="w-56 mt-2">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => router.push('/profile')} className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push('/settings')} className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} variant="destructive" className="cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu */}
@@ -130,6 +157,7 @@ export function Topbar() {
             </Sheet>
           </div>
 
+        </div>
         </div>
       </div>
     </header>

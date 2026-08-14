@@ -26,42 +26,10 @@ export function OrganizationSettings({ organization }: { organization: Organizat
 
   return (
     <div className="space-y-10 max-w-4xl mx-auto">
-      {/* General Settings */}
-      <section className="space-y-6">
-        <div>
-          <h3 className="text-lg font-bold text-foreground">General Settings</h3>
-          <p className="text-sm text-muted-foreground">Manage your organization's basic information.</p>
-        </div>
 
-        <div className="grid gap-6">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Organization Name</Label>
-            <Input id="name" defaultValue={organization.name} className="h-12" />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" defaultValue={organization.description} rows={4} className="resize-none" />
-          </div>
-
-          <div className="grid gap-2">
-            <Label>Logo</Label>
-            <div className="flex items-center gap-4">
-              <div className="h-20 w-20 bg-muted rounded-md flex items-center justify-center border border-border">
-                {organization.logoUrl ? (
-                  <img src={organization.logoUrl} alt="Logo" className="h-full w-full object-cover rounded-md" />
-                ) : (
-                  <span className="text-muted-foreground text-2xl font-bold">{organization.name.substring(0, 2).toUpperCase()}</span>
-                )}
-              </div>
-              <Button variant="outline">Upload New Logo</Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Appointment Policy */}
-      <section className="space-y-6 border-t border-border pt-8">
+      <section className="space-y-6">
         <div>
           <h3 className="text-lg font-bold text-foreground">Appointment Policy</h3>
           <p className="text-sm text-muted-foreground">Configure how meetings are scheduled.</p>

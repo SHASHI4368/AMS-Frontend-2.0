@@ -6,6 +6,7 @@ import { Building2, Edit2, LogOut, UserPlus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useState } from 'react';
 import { InviteMemberDialog } from './InviteMemberDialog';
+import { EditOrganizationDialog } from './EditOrganizationDialog';
 
 interface OrganizationHeaderProps {
   organization: Organization;
@@ -14,6 +15,7 @@ interface OrganizationHeaderProps {
 
 export function OrganizationHeader({ organization, isManager }: OrganizationHeaderProps) {
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   return (
     <div className="bg-card border border-border rounded-md shadow-sm p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -50,7 +52,7 @@ export function OrganizationHeader({ organization, isManager }: OrganizationHead
       <div className="flex flex-wrap items-center gap-3 shrink-0">
         {isManager ? (
           <>
-            <Button variant="outline" className="h-10 border-border">
+            <Button variant="outline" className="h-10 border-border" onClick={() => setEditOpen(true)}>
               <Edit2 className="h-4 w-4 mr-2" />
               Edit Profile
             </Button>
@@ -68,11 +70,18 @@ export function OrganizationHeader({ organization, isManager }: OrganizationHead
       </div>
 
       {isManager && (
-        <InviteMemberDialog
-          organizationId={organization.id}
-          open={inviteOpen}
-          onOpenChange={setInviteOpen}
-        />
+        <>
+          <InviteMemberDialog
+            organizationId={organization.id}
+            open={inviteOpen}
+            onOpenChange={setInviteOpen}
+          />
+          <EditOrganizationDialog
+            organization={organization}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+          />
+        </>
       )}
     </div>
   );
