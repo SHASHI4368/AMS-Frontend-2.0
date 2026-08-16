@@ -24,7 +24,7 @@ export const organizationService = {
     }
   },
 
-  getMyOrganizations: async (userId: string): Promise<Organization[]> => {
+  getMyOrganizations: async () => {
     try {
       const { data } = await api.get('/organizations/my');
       console.log("My orgs raw response:", data);
@@ -59,20 +59,31 @@ export const organizationService = {
   },
 
   getPendingRequests: async (orgId: string): Promise<Membership[]> => {
-    await delay(500);
-    // Fake some pending requests
-    return [
-      {
-        id: 'req_1',
+    try {
+      const { data } = await api.get(`/memberships/${orgId}/pending-requests`);
+      const requests = data.body || data.data || data || [];
+      return requests.map((req: any) => ({
+        id: String(req.id),
         organizationId: orgId,
-        userId: 'u1',
+        userId: '', 
         role: 'MEMBER',
         status: 'PENDING',
-        reason: 'I want to join the Engineering team.',
-        department: 'Engineering',
-        user: dummyUsers[0]
-      }
-    ];
+        reason: req.note || req.reason || '',
+        joinedAt: req.requestedAt,
+        user: {
+          id: '',
+          email: req.email,
+          firstName: req.name?.split(' ')[0] || '',
+          lastName: req.name?.split(' ').slice(1).join(' ') || '',
+          name: req.name,
+          role: 'USER',
+          avatarUrl: req.avatarUrl
+        }
+      }));
+    } catch (error) {
+      console.error(`Failed to fetch pending requests for org ${orgId}`, error);
+      return [];
+    }
   },
 
   getInvitations: async (orgId: string): Promise<Invitation[]> => {
@@ -130,8 +141,12 @@ export const organizationService = {
   },
 
   requestToJoin: async (orgId: string, message?: string): Promise<void> => {
-    await delay(500);
-    console.log(`Requested to join ${orgId} with message: ${message}`);
+    try {
+      await api.post(`/memberships/${orgId}/join`, { note: message || '' });
+    } catch (error) {
+      console.error(`Failed to request to join organization ${orgId}`, error);
+      throw error;
+    }
   },
 
   getOrganizationActivity: async (orgId: string): Promise<OrganizationActivity[]> => {
@@ -182,11 +197,23 @@ export const organizationService = {
   },
 
   approveJoinRequest: async (reqId: string): Promise<void> => {
-    await delay(500);
+    try {
+      await api.post(`/memberships/${reqId}/accept`);
+    } catch (error) {
+      console.error(`Failed to approve request ${reqId}`, error);
+      throw error;
+    }
   },
 
   rejectJoinRequest: async (reqId: string, reason?: string): Promise<void> => {
-    await delay(500);
+    try {
+      // If the backend accepts a reason, we can pass it in the body. The user didn't mention it, 
+      // but we will send it just in case, or leave it empty. Let's pass {} for now.
+      await api.post(`/memberships/${reqId}/reject`, reason ? { reason } : {});
+    } catch (error) {
+      console.error(`Failed to reject request ${reqId}`, error);
+      throw error;
+    }
   },
 
   removeMember: async (membershipId: string): Promise<void> => {

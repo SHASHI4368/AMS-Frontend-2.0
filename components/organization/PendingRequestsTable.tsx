@@ -5,6 +5,8 @@ import { organizationService } from '@/services/organizationService';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 
 export function PendingRequestsTable({ organizationId }: { organizationId: string }) {
@@ -54,7 +56,7 @@ export function PendingRequestsTable({ organizationId }: { organizationId: strin
         <TableHeader className="bg-muted/50">
           <TableRow>
             <TableHead>User</TableHead>
-            <TableHead>Reason</TableHead>
+            <TableHead>Requested</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -63,19 +65,22 @@ export function PendingRequestsTable({ organizationId }: { organizationId: strin
             <TableRow key={req.id}>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xs shrink-0">
-                    {req.user?.name.substring(0, 2).toUpperCase() || 'U'}
-                  </div>
+                  <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarImage src={req.user?.avatarUrl} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                      {req.user?.name?.substring(0, 2).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
                   <div>
                     <div className="font-medium text-foreground">{req.user?.name || 'Unknown User'}</div>
                     <div className="text-xs text-muted-foreground">{req.user?.email || 'No email'}</div>
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="max-w-xs">
-                <p className="text-sm text-muted-foreground truncate" title={req.reason}>
-                  {req.reason || 'No reason provided'}
-                </p>
+              <TableCell>
+                <div className="text-sm text-muted-foreground whitespace-nowrap">
+                  {req.joinedAt ? formatDistanceToNow(new Date(req.joinedAt), { addSuffix: true }) : 'Recently'}
+                </div>
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-2">
