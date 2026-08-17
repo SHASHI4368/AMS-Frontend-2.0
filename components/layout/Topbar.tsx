@@ -11,21 +11,22 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { notificationService } from '@/services/notificationService';
 import { useEffect } from 'react';
+import { connectWebSocket, disconnectWebSocket } from '@/lib/websocket';
 
 export function Topbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, logout } = useAuthStore();
   const { notifications, setNotifications } = useNotificationStore();
   
   const { data: notifData } = useQuery({
     queryKey: ['notifications-topbar'],
-    queryFn: () => notificationService.getNotifications(0, 50), // fetch recent for unread count
+    queryFn: () => notificationService.getNotifications(0, 50),
     enabled: !!user,
-    refetchInterval: 60000, // optionally poll every minute
   });
 
   useEffect(() => {
@@ -33,6 +34,20 @@ export function Topbar() {
       setNotifications(notifData.content);
     }
   }, [notifData, setNotifications]);
+
+  useEffect(() => {
+    if (user) {
+      connectWebSocket((event) => {
+        if (event.type === 'NOTIFICATION_UPDATED' || event.type === 'NOTIFICATIONS_UPDATED') {
+          queryClient.invalidateQueries({ queryKey: ['notifications'] });
+          queryClient.invalidateQueries({ queryKey: ['notifications-topbar'] });
+        }
+      });
+    }
+    return () => {
+      disconnectWebSocket();
+    };
+  }, [user, queryClient]);
   
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
