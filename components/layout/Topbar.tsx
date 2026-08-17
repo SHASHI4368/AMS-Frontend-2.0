@@ -11,12 +11,28 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
+import { useQuery } from '@tanstack/react-query';
+import { notificationService } from '@/services/notificationService';
+import { useEffect } from 'react';
 
 export function Topbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
-  const { notifications } = useNotificationStore();
+  const { notifications, setNotifications } = useNotificationStore();
+  
+  const { data: notifData } = useQuery({
+    queryKey: ['notifications-topbar'],
+    queryFn: () => notificationService.getNotifications(0, 50), // fetch recent for unread count
+    enabled: !!user,
+    refetchInterval: 60000, // optionally poll every minute
+  });
+
+  useEffect(() => {
+    if (notifData?.content) {
+      setNotifications(notifData.content);
+    }
+  }, [notifData, setNotifications]);
   
   const unreadCount = notifications.filter(n => !n.isRead).length;
 

@@ -94,6 +94,8 @@ export interface Notification {
   isRead: boolean;
   createdAt: string;
   link?: string;
+  targetType?: string;
+  referenceId?: string | number;
 }
 
 export interface CalendarEvent {
