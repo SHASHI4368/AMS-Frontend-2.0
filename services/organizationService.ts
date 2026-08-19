@@ -48,14 +48,37 @@ export const organizationService = {
     }
   },
 
-  getOrganizationMembers: async (orgId: string): Promise<Membership[]> => {
-    await delay(600);
-    return dummyMemberships
-      .filter(m => m.organizationId === orgId && m.status === 'ACTIVE')
-      .map(m => ({
-        ...m,
-        user: dummyUsers.find(u => u.id === m.userId)
-      }));
+  getOrganizationMembers: async (orgId: string, page = 0, size = 10, search = ''): Promise<PaginatedResponse<Membership>> => {
+    try {
+      const { data } = await api.get(`/memberships/${orgId}/members`, {
+        params: { page, size, search }
+      });
+      const body = data.body || data;
+      return {
+        ...body,
+        content: (body.content || []).map((m: any) => ({
+          id: String(m.id),
+          organizationId: orgId,
+          userId: '',
+          role: m.role,
+          status: 'ACTIVE',
+          joinedAt: m.joinedAt,
+          user: {
+            id: '',
+            email: m.email,
+            firstName: m.firstName || '',
+            lastName: m.lastName || '',
+            name: `${m.firstName} ${m.lastName}`.trim(),
+            role: 'USER',
+            avatarUrl: m.avatarUrl,
+            phoneNumber: m.phoneNumber
+          }
+        }))
+      };
+    } catch (error) {
+      console.error(`Failed to fetch members for org ${orgId}`, error);
+      throw error;
+    }
   },
 
   getPendingRequests: async (orgId: string): Promise<Membership[]> => {
