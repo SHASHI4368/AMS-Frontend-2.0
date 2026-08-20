@@ -12,13 +12,25 @@ import { InvitationsTable } from './InvitationsTable';
 import { OrganizationSettings } from './OrganizationSettings';
 import { OrganizationActivity } from './OrganizationActivity';
 import Link from 'next/link';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 interface WorkspaceProps {
   organization: Organization;
 }
 
 export function OrganizationWorkspaceLayout({ organization }: WorkspaceProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab') || 'overview';
+  
   const isManager = organization.myRole === 'OWNER' || organization.myRole === 'ADMIN';
+
+  const handleTabChange = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('tab', value);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -36,7 +48,7 @@ export function OrganizationWorkspaceLayout({ organization }: WorkspaceProps) {
       <OrganizationStats organization={organization} isManager={isManager} />
 
       <div className="bg-card border border-border rounded-md shadow-sm overflow-hidden mt-8">
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
           <div className="border-b border-border bg-muted/20 px-6 py-2 overflow-x-auto">
             <TabsList variant="line" className="bg-transparent gap-6 h-auto p-0 min-w-max">
               <TabsTrigger 

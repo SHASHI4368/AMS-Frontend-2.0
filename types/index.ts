@@ -131,11 +131,22 @@ export interface BlockedSlot {
   reason?: string;
 }
 
+export type OrganizationActivityType = 
+  | 'ORGANIZATION_CREATED' 
+  | 'ORGANIZATION_UPDATED' 
+  | 'MEMBER_JOINED' 
+  | 'MEMBER_LEFT' 
+  | 'MEMBER_INVITED' 
+  | 'INVITATION_ACCEPTED' 
+  | 'INVITATION_REJECTED' 
+  | 'JOIN_REQUEST_SENT' 
+  | 'JOIN_REQUEST_ACCEPTED' 
+  | 'JOIN_REQUEST_REJECTED';
+
 export interface OrganizationActivity {
-  id: string;
-  organizationId: string;
-  userId?: string;
-  type: 'JOINED' | 'REQUESTED' | 'INVITED' | 'REMOVED' | 'PROMOTED' | 'DEMOTED' | 'UPDATED' | 'APPROVED' | 'REJECTED';
+  id: number | string;
+  activityType: OrganizationActivityType;
+  actor: string;
   description: string;
   createdAt: string;
 }

@@ -50,7 +50,7 @@ export const organizationService = {
 
   getOrganizationMembers: async (orgId: string, page = 0, size = 10, search = ''): Promise<PaginatedResponse<Membership>> => {
     try {
-      const { data } = await api.get(`/memberships/${orgId}/members`, {
+      const { data } = await api.get(`/organizations/${orgId}/members`, {
         params: { page, size, search }
       });
       const body = data.body || data;
@@ -172,13 +172,16 @@ export const organizationService = {
     }
   },
 
-  getOrganizationActivity: async (orgId: string): Promise<OrganizationActivity[]> => {
-    await delay(300);
-    return [
-      { id: 'act_1', organizationId: orgId, type: 'JOINED', description: 'Bob Jones joined the organization.', createdAt: new Date().toISOString() },
-      { id: 'act_2', organizationId: orgId, type: 'INVITED', description: 'Invitation sent to newhire@example.com.', createdAt: new Date(Date.now() - 86400000).toISOString() },
-      { id: 'act_3', organizationId: orgId, type: 'UPDATED', description: 'Organization settings updated by Admin.', createdAt: new Date(Date.now() - 86400000 * 2).toISOString() },
-    ];
+  getOrganizationActivity: async (orgId: string, page = 0, size = 10): Promise<PaginatedResponse<OrganizationActivity>> => {
+    try {
+      const { data } = await api.get(`/organization-activities/${orgId}`, {
+        params: { page, size }
+      });
+      return data.body || data;
+    } catch (error) {
+      console.error(`Failed to fetch activities for org ${orgId}`, error);
+      throw error;
+    }
   },
 
   getOrganizationStatistics: async (orgId: string): Promise<OrganizationStatistics> => {
