@@ -20,7 +20,7 @@ export default function MyAppointmentsPage() {
 
   const filteredAppointments = appointments.filter(app => {
     const matchesSearch = app.title.toLowerCase().includes(search.toLowerCase()) || 
-                          app.organizer?.name.toLowerCase().includes(search.toLowerCase());
+                          app.organizer?.name?.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'ALL' || app.status === statusFilter;
     return matchesSearch && matchesStatus;
   });

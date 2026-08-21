@@ -196,11 +196,24 @@ export const organizationService = {
     };
   },
 
-  searchUsers: async (query: string): Promise<User[]> => {
-    await delay(300);
-    if (!query) return [];
-    const lower = query.toLowerCase();
-    return dummyUsers.filter(u => u.name.toLowerCase().includes(lower) || u.email.toLowerCase().includes(lower));
+  searchUsers: async (orgId: string, search: string, page = 0, size = 10): Promise<PaginatedResponse<User>> => {
+    try {
+      const { data } = await api.get(`/users/${orgId}/available`, {
+        params: { search, page, size }
+      });
+      const body = data.body || data;
+      return {
+        ...body,
+        content: (body.content || []).map((u: any) => ({
+          ...u,
+          id: String(u.id),
+          name: `${u.firstName || ''} ${u.lastName || ''}`.trim()
+        }))
+      };
+    } catch (error) {
+      console.error("Failed to search users", error);
+      throw error;
+    }
   },
 
   inviteUser: async (orgId: string, email: string): Promise<void> => {

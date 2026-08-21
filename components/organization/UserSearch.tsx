@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState, useRef, useEffect } from 'react';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { organizationService } from '@/services/organizationService';
-import { User } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -14,14 +13,47 @@ import { useDebounce } from '@/hooks/useDebounce';
 export function UserSearch({ organizationId }: { organizationId: string }) {
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query, 300);
+  const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading } = useQuery({
-    queryKey: ['search-users', debouncedQuery],
-    queryFn: () => organizationService.searchUsers(debouncedQuery),
+  const { 
+    data, 
+    isLoading, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useInfiniteQuery({
+    queryKey: ['search-users', organizationId, debouncedQuery],
+    queryFn: ({ pageParam = 0 }) => organizationService.searchUsers(organizationId, debouncedQuery, pageParam, 10),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.last) {
+        return lastPage.page + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 0,
     enabled: debouncedQuery.length > 0,
   });
 
-  const queryClient = useQueryClient();
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    }, { threshold: 1.0 });
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleInvite = async (email: string) => {
     toast.promise(organizationService.inviteUser(organizationId, email), {
@@ -33,6 +65,8 @@ export function UserSearch({ organizationId }: { organizationId: string }) {
       error: 'Failed to send invitation',
     });
   };
+
+  const users = data?.pages.flatMap(page => page.content) || [];
 
   return (
     <div className="space-y-4">
@@ -46,7 +80,7 @@ export function UserSearch({ organizationId }: { organizationId: string }) {
         />
       </div>
 
-      <div className="min-h-[200px] border border-border rounded-lg p-2 bg-muted/10">
+      <div className="h-[300px] overflow-y-auto border border-border rounded-lg p-2 bg-muted/10">
         {!query ? (
           <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-10">
             <Search className="h-8 w-8 mb-2 opacity-20" />
@@ -58,7 +92,7 @@ export function UserSearch({ organizationId }: { organizationId: string }) {
           </div>
         ) : users.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-10">
-            <p className="text-sm">No users found matching "{query}"</p>
+            <p className="text-sm">No users found matching &quot;{query}&quot;</p>
           </div>
         ) : (
           <ul className="space-y-1">
@@ -67,7 +101,7 @@ export function UserSearch({ organizationId }: { organizationId: string }) {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-9 w-9">
                     {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt={u.name} />}
-                    <AvatarFallback className="text-xs bg-primary/10 text-primary">{u.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">{u.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium text-sm text-foreground">{u.name}</p>
@@ -79,6 +113,11 @@ export function UserSearch({ organizationId }: { organizationId: string }) {
                 </Button>
               </li>
             ))}
+            {hasNextPage && (
+              <div ref={loadMoreRef} className="flex justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
           </ul>
         )}
       </div>
