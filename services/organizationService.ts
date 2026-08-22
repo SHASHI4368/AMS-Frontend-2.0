@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { delay } from '../utils/mockUtils';
-import { dummyOrganizations, dummyMemberships, dummyUsers, dummyInvitations } from '../dummy-data';
+import { dummyOrganizations, dummyMemberships } from '../dummy-data';
 import { Organization, Membership, User, OrganizationActivity, OrganizationStatistics, Invitation, PaginatedResponse } from '../types';
 import { api } from '@/lib/axios';
 
@@ -110,18 +110,23 @@ export const organizationService = {
   },
 
   getInvitations: async (orgId: string): Promise<Invitation[]> => {
-    await delay(400);
-    // Fake some invitations
-    return [
-      {
-        id: 'inv_1',
+    try {
+      const { data } = await api.get(`/memberships/${orgId}/pending-invitations`);
+      const body = data.body || [];
+      return body.map((inv: any) => ({
+        id: String(inv.id),
         organizationId: orgId,
-        email: 'newhire@example.com',
-        role: 'MEMBER',
-        status: 'PENDING',
-        invitedAt: new Date().toISOString()
-      }
-    ];
+        email: inv.email,
+        name: inv.name,
+        avatarUrl: inv.avatarUrl,
+        role: "MEMBER", // Defaulting since backend might not provide it yet
+        status: "PENDING",
+        invitedAt: inv.invitedAt || new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error(`Failed to fetch pending invitations for org ${orgId}`, error);
+      return [];
+    }
   },
 
   getOrganizationById: async (orgId: string) => {
@@ -216,19 +221,19 @@ export const organizationService = {
     }
   },
 
-  inviteUser: async (orgId: string, email: string): Promise<void> => {
-    await delay(600);
-    const org = dummyOrganizations.find(o => o.id === orgId);
-    dummyInvitations.push({
-      id: 'inv_' + Date.now(),
-      organizationId: orgId,
-      email: email,
-      role: 'MEMBER' as const,
-      status: 'PENDING' as const,
-      invitedAt: new Date().toISOString(),
-      organization: org,
-      invitedBy: dummyUsers[0]
-    });
+  inviteUser: async (orgId: string, userId: string, note?: string): Promise<void> => {
+    try {
+      const response = await api.post(`/memberships/${orgId}/invite/${userId}`, { note: note || '' });
+      if (response.data && response.data.success === false) {
+        throw new Error(response.data.message || 'Failed to send invitation');
+      }
+    } catch (error: any) {
+      console.log(`Failed to invite user ${userId} to org ${orgId}`, error);
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw error instanceof Error ? error : new Error('Failed to send invitation');
+    }
   },
 
   cancelInvitation: async (invId: string): Promise<void> => {

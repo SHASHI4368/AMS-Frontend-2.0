@@ -80,6 +80,8 @@ export interface Invitation {
   id: string;
   organizationId: string;
   email: string;
+  name?: string;
+  avatarUrl?: string;
   role: 'MEMBER' | 'ADMIN' | 'OWNER';
   status: 'PENDING' | 'ACCEPTED' | 'EXPIRED';
   invitedAt: string;
